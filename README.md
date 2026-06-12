@@ -1,12 +1,25 @@
 # AI News Agent
 
-A personalized news aggregator that fetches live headlines, summarizes each article with Claude AI, and classifies sentiment using VADER. Type a topic, get a curated feed with summaries and sentiment scores in seconds.
+Type a topic, get a curated news feed with AI summaries and sentiment scores in seconds.
+
+Fetches live headlines via Google News RSS, summarizes each article with Claude Haiku, and classifies sentiment with VADER — all in one Streamlit app.
 
 ---
 
-## What it does
+## Quick Start
 
-Staying current on a topic like AI or data engineering means reading a lot, and most of it is noise. This agent cuts through: it fetches real headlines, tells you what each article actually says in two sentences, and flags whether the tone is positive, negative, or neutral before you click.
+```bash
+pip install -r requirements.txt
+
+export ANTHROPIC_API_KEY=your_key_here
+streamlit run app.py
+```
+
+Open http://localhost:8501, type a topic (e.g. "Machine Learning"), choose how many articles, and click **Fetch & Analyze**.
+
+---
+
+## How it works
 
 ```
 Topic input
@@ -26,37 +39,24 @@ Streamlit feed (source, summary, badge, link)
 
 ---
 
-## Running the App
-
-```bash
-pip install -r requirements.txt
-
-export ANTHROPIC_API_KEY=your_key_here
-streamlit run app.py
-```
-
-Open http://localhost:8501, type a topic (e.g. "Machine Learning"), choose how many articles, and click **Fetch & Analyze**.
-
----
-
 ## Repo Structure
 
 ```
-app.py              Streamlit UI and full pipeline
-agent-Copy1.py      Original Python script (no UI)
+app.py            Streamlit UI and full pipeline
+agent-Copy1.py    Original Python script (no UI)
 requirements.txt
-render.yaml         Render deployment config
+render.yaml       Render deployment config
 ```
 
 ---
 
 ## Design Choices
 
-**Claude over GPT for summarization:** Claude Haiku produces clean, readable two-sentence summaries at low latency and cost. The model handles domain-specific language (ML, finance, healthcare) without hallucinating key facts.
+**Claude Haiku for summaries.** Produces clean, readable two-sentence summaries at low latency and cost. Handles domain-specific language (ML, finance, healthcare) without hallucinating key facts from the article.
 
-**VADER for sentiment:** VADER is a rule-based lexicon model that runs locally with no API call and no latency. It handles news headlines well. Using an LLM for sentiment would add cost and latency with no meaningful accuracy gain for this use case.
+**VADER for sentiment.** A rule-based lexicon model that runs locally with no API call and near-zero latency. It handles news headlines well. Using an LLM for sentiment would add cost and round-trip time for no meaningful accuracy gain.
 
-**Google News RSS over NewsAPI:** No registration, no rate limits, always fresh. The RSS feed provides everything needed: headline, description, source, and link.
+**Google News RSS over NewsAPI.** No registration, no rate limits, always fresh. The RSS feed includes everything needed: headline, description, source, and link.
 
 ---
 
