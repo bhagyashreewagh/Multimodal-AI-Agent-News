@@ -1,139 +1,69 @@
-# Multimodal AI Agent - News Summarization & Sentiment Analysis
+# AI News Agent
 
-## Abstract
-
-Multi-modal AI agents have become a significant area of interest due to their ability to process and integrate information from multiple data sources.
-
-This project presents the design and implementation of a personalized news aggregator built using multi-modal AI techniques. The system:
-
-- Collects news articles  
-- Generates summaries using language models  
-- Performs sentiment analysis  
-- Delivers relevant and customized content to users  
-
-The agent leverages state-of-the-art AI models and frameworks, demonstrating how intelligent automation can enhance user experiences.
+A personalized news aggregator that fetches live headlines, summarizes each article with Claude AI, and classifies sentiment using VADER. Type a topic, get a curated feed with summaries and sentiment scores in seconds.
 
 ---
 
-## Introduction
+## What it does
 
-With the exponential growth of online information, users are often overwhelmed by the sheer volume of available content.
+Staying current on a topic like AI or data engineering means reading a lot, and most of it is noise. This agent cuts through: it fetches real headlines, tells you what each article actually says in two sentences, and flags whether the tone is positive, negative, or neutral before you click.
 
-Multi-modal AI agents, which can process text, images, audio, and other data types, offer a promising solution by intelligently filtering and summarizing information.
-
-This project focuses on building a multi-modal AI agent designed to:
-
-- Aggregate news  
-- Summarize articles  
-- Analyze sentiments  
-- Deliver personalized content  
-
-The system combines:
-
-- Natural Language Processing (NLP)  
-- Sentiment Analysis  
-- Text Summarization models  
-- APIs and pre-trained transformer models  
-
----
-
-## Related Work
-
-### Personalized News Aggregators
-Traditional news aggregators rely on keyword-based filtering. Recent advancements incorporate machine learning to provide more accurate recommendations.
-
-### AI Summarization Models
-Pre-trained models such as GPT, BERT, and T5 have shown strong performance in text summarization tasks.
-
-### Sentiment Analysis
-Sentiment analysis models such as VADER and transformer-based classifiers are widely used in social media and review analysis. This project integrates them into a unified AI agent pipeline.
+```
+Topic input
+    |
+    v
+Google News RSS (live headlines, no API key needed)
+    |
+    v
+Claude Haiku (2-sentence summary per article)
+    |
+    v
+VADER (sentiment: Positive / Negative / Neutral + compound score)
+    |
+    v
+Streamlit feed (source, summary, badge, link)
+```
 
 ---
 
-## System Architecture
+## Running the App
 
-The architecture consists of four main components:
+```bash
+pip install -r requirements.txt
 
-### 1. Data Collection Module
-- Fetches news articles from APIs or web scraping
-- Filters content based on user preferences
+export ANTHROPIC_API_KEY=your_key_here
+streamlit run app.py
+```
 
-### 2. Summarization Module
-- Uses pre-trained language models
-- Generates concise and coherent summaries
-
-### 3. Sentiment Analysis Module
-- Classifies articles as:
-  - Positive  
-  - Negative  
-  - Neutral  
-
-### 4. User Interface
-- Displays curated summaries
-- Shows sentiment scores
-- Presents news in an intuitive format
+Open http://localhost:8501, type a topic (e.g. "Machine Learning"), choose how many articles, and click **Fetch & Analyze**.
 
 ---
 
-## Results and Discussion
+## Repo Structure
 
-The system was tested across multiple domains including technology, finance, and health.
-
-### Evaluation Metrics
-
-| Metric | Description |
-|--------|------------|
-| Summarization Accuracy | Compared generated summaries with human-written summaries |
-| Sentiment Classification Accuracy | Evaluated using labeled benchmark datasets |
-| User Satisfaction | Collected qualitative feedback from users |
-
-### Key Observations
-
-- Summaries were coherent and informative  
-- Sentiment classification achieved high accuracy  
-- Users reported high satisfaction with relevance and clarity  
+```
+app.py              Streamlit UI and full pipeline
+agent-Copy1.py      Original Python script (no UI)
+requirements.txt
+render.yaml         Render deployment config
+```
 
 ---
 
-## Applications and Use Cases
+## Design Choices
 
-This multi-modal AI agent can be applied in:
+**Claude over GPT for summarization:** Claude Haiku produces clean, readable two-sentence summaries at low latency and cost. The model handles domain-specific language (ML, finance, healthcare) without hallucinating key facts.
 
-- Personalized News Platforms  
-- Market Sentiment Analysis  
-- Content Curation Tools  
-- Automated Customer Support  
-- Financial News Monitoring  
+**VADER for sentiment:** VADER is a rule-based lexicon model that runs locally with no API call and no latency. It handles news headlines well. Using an LLM for sentiment would add cost and latency with no meaningful accuracy gain for this use case.
 
----
-
-## Future Work
-
-Planned improvements include:
-
-- Adding image, audio, and video processing  
-- Fine-tuning summarization models for domain-specific tasks  
-- Developing a full web or mobile application  
-- Enabling multi-language support  
-- Integrating recommendation systems  
+**Google News RSS over NewsAPI:** No registration, no rate limits, always fresh. The RSS feed provides everything needed: headline, description, source, and link.
 
 ---
 
 ## Tech Stack
 
-- Python  
-- OpenAI API  
-- Hugging Face Transformers  
-- VADER Sentiment Analysis  
-- News API  
-- NLP Libraries  
-
----
-
-## References
-
-- OpenAI API Documentation: https://platform.openai.com/docs  
-- VADER Sentiment Analysis Tool: https://github.com/cjhutto/vaderSentiment  
-- Hugging Face Transformers Library: https://huggingface.co/transformers  
-- News API Documentation: https://newsapi.org  
-- Devlin et al. (2018). BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding.
+- Python
+- Streamlit (UI)
+- Claude Haiku via Anthropic API (summarization)
+- VADER / NLTK (sentiment analysis)
+- Google News RSS (live news feed)
